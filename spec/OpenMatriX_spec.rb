@@ -32,8 +32,71 @@ describe OpenMatriX do
   it 'reads a matrix full of ones' do
     file = OMX::OMXFile.new("./spec/TestMat.omx")
     at = OMX::OMXAttr.new(file)
-    #TODO: Add the code to read the matrix here
+    nZones = at.getZones()
+    tt = OMX::OMXData.new(file,"All Ones",at.getZones())
+    pass = true
+    for i in 1..nZones
+      for j in 1..nZones
+        if tt.getIJ(i,j) != 1
+          pass = false
+        end
+      end
+    end
+
     file.close()
-    expect(true).to eq(true)
+    expect(pass).to eq(true)
+  end
+
+  it 'reads by row' do
+    file = OMX::OMXFile.new("./spec/TestMat.omx")
+    at = OMX::OMXAttr.new(file)
+    nZones = at.getZones()
+    tt = OMX::OMXData.new(file,"Row Num",at.getZones())
+    pass = true
+    for i in 1..nZones
+      for j in 1..nZones
+        if tt.getIJ(i,j) != i
+          pass = false
+        end
+      end
+    end
+    file.close()
+    expect(pass).to eq(true)
+  end
+
+  it 'reads by column' do
+    file = OMX::OMXFile.new("./spec/TestMat.omx")
+    at = OMX::OMXAttr.new(file)
+    nZones = at.getZones()
+    tt = OMX::OMXData.new(file,"Col Num",at.getZones())
+    pass = true
+    for i in 1..nZones
+      for j in 1..nZones
+        if tt.getIJ(i,j) != j
+          pass = false
+        end
+      end
+    end
+    file.close()
+    expect(pass).to eq(true)
+  end
+
+  it 'reads sequentially' do
+    file = OMX::OMXFile.new("./spec/TestMat.omx")
+    at = OMX::OMXAttr.new(file)
+    nZones = at.getZones()
+    tt = OMX::OMXData.new(file,"Counting",at.getZones())
+    pass = true
+    cnt = 1
+    for i in 1..nZones
+      for j in 1..nZones
+        if tt.getIJ(i,j) != cnt
+          pass = false
+        end
+        cnt += 1
+      end
+    end
+    file.close()
+    expect(pass).to eq(true)
   end
 end
