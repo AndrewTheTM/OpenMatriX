@@ -38,7 +38,9 @@ puts "Table Names: #{t.getTableNames()}"
 # Get data from the file
 # OMX::OMXData.new(file,"Tablename", nZones)
 tt = OMX::OMXData.new(file,"DIST",at.getZones())
-puts tt.getJ(5)
+puts tt.getI(zone) # Returns array of all J from zone
+puts tt.getJ(zone) # Returns array of all I to zone
+puts tt.getIJ(i,j) # Returns value at i,j
 
 # Close the file
 file.close()
