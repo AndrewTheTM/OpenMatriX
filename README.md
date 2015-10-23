@@ -1,6 +1,6 @@
 # OpenMatriX
 
-OpenMatriX is a Ruby Gem to read (Open Matrix files)[https://sites.google.com/site/openmodeldata/]. This was built for use on the web and to eventually have APIs that can return values from a matrix.
+OpenMatriX is a Ruby Gem to read [Open Matrix files](https://sites.google.com/site/openmodeldata/). This was built for use on the web and to eventually have APIs that can return values from a matrix.
 
 ## Installation
 
@@ -22,27 +22,30 @@ Or install it yourself as:
 
 ```ruby
 # Open file
-# OMX::OMXFile.new(filename)
+# file_obj = OMX::OMXFile.new(filename)
 file = OMX::OMXFile.new('filename.omx')
 
 # Get the attributes from the file
+# att_obj = OMX::OMXAttr(file_obj)
 at = OMX::OMXAttr.new(file)
 puts "Version: #{at.getVersion()}"
 puts "Zones: #{at.getZones()}"
 
 # Get the tables from the file
+# table_obj = OMX::OMXTables.new(file_obj)
 t = OMX::OMXTables.new(file)
 puts "Tables: #{t.getNTables()}"
 puts "Table Names: #{t.getTableNames()}"
 
 # Get data from the file
-# OMX::OMXData.new(file,"Tablename", nZones)
+# data_object = OMX::OMXData.new(file_obj,"Tablename", number_of_zones)
 tt = OMX::OMXData.new(file,"DIST",at.getZones())
 puts tt.getI(zone) # Returns array of all J from zone
 puts tt.getJ(zone) # Returns array of all I to zone
 puts tt.getIJ(i,j) # Returns value at i,j
 
 # Close the file
+# file_obj.close()
 file.close()
 ```
 
