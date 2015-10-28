@@ -217,39 +217,47 @@ module OMX
       extend  FFI::Library
       ffi_lib H5Library.library_path
 
+      class H5GInfoT < FFI::Struct
+        layout :storType, :int,
+          :nLinks, H5Types.hsize_t,
+          :maxCOrder, :int,
+          :mounted, H5Types.hbool_t
+      end
+
+      def cast_to_H5GInfoT pointer
+        H5GInfoT.new pointer
+      end
+
       #hid_t H5Dopen( hid_t loc_id, const char *name )
-      attach_function :gOpen, :H5Gopen1, [H5Types.hid_t, :string], H5Types.hid_t
+      attach_function :gOpen, :H5Gopen2, [H5Types.hid_t, :string, H5Types.hid_t], H5Types.hid_t
 
-      #herr_t H5Gget_num_objs(hid_t loc_id, hsize_t* num_obj)
-      attach_function :nTables, :H5Gget_num_objs, [H5Types.hid_t, :pointer], H5Types.herr_t
+      #herr_t H5Gget_info( hid_t group_id, H5G_info_t *group_info )
+      attach_function :nTables, :H5Gget_info, [H5Types.hid_t, H5GInfoT], H5Types.herr_t
 
+      #FIXME: Deprecated
       #ssize_t H5Gget_objname_by_idx(hid_t loc_id, hsize_t idx, char *name, size_t size )
       attach_function :tNames, :H5Gget_objname_by_idx, [H5Types.hid_t, :int, :pointer, :int], :int
 
+      #herr_t H5Gget_info_by_idx( hid_t loc_id, const char *group_name, H5_index_t index_type, H5_iter_order_t order, hsize_t n, H5G_info_t *group_info, hid_t lapl_id )
+      attach_function :tNames2, :H5Gget_info_by_idx, [H5Types.hid_t, :pointer, H5_index_t , :int, H5Types.hsize_t, H5GInfoT, H5Types.hid_t], H5Types.herr_t
+      #FIXME: #1: the H5_index_t needs to be defined
+
       def initialize(file)
         @id = file.id
-        @gId = gOpen(@id, "data")
+        @gId = gOpen(@id, "data",0)
       end
 
       # A function to return the number of matrix tables. Returns an integer value
       # of the number of tables in the matrix
       def getNTables()
-        nObjs = FFI::MemoryPointer.new(H5Types.hsize_t)
-        nT = nTables(@gId, nObjs)
-        return(nObjs.read_int())
-      end
-
-      # A function to get the table info... kind of a useless function for now
-      # TODO: Can this be removed?
-      def getTableInfo()
-        sb = Statbuf.new
-        oi = tInfo(@id, "data", 0, sb)
-        puts sb[:nlink]
-        return(oi)
+        h5gi = cast_to_H5GInfoT(FFI::MemoryPointer.new :char, H5GInfoT.size)
+        op = nTables(@gId,h5gi)
+        return(h5gi[:nLinks])
       end
 
       # A function to get the table names. Returns a string array of table names.
       def getTableNames()
+
         nT = self.getNTables()-1
 
         tN ||= []
