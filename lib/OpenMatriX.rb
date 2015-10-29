@@ -228,19 +228,25 @@ module OMX
         H5GInfoT.new pointer
       end
 
+      class H5_index < FFI::Struct
+        layout :idxUnk, :int,
+          :idxName, :string,
+          :idxOrder, :int,
+          :nIdx, :int
+      end
+
+      def cast_to_H5_index pointer
+        H5_index.new pointer
+      end
+
       #hid_t H5Dopen( hid_t loc_id, const char *name )
       attach_function :gOpen, :H5Gopen2, [H5Types.hid_t, :string, H5Types.hid_t], H5Types.hid_t
 
       #herr_t H5Gget_info( hid_t group_id, H5G_info_t *group_info )
       attach_function :nTables, :H5Gget_info, [H5Types.hid_t, H5GInfoT], H5Types.herr_t
 
-      #FIXME: Deprecated
-      #ssize_t H5Gget_objname_by_idx(hid_t loc_id, hsize_t idx, char *name, size_t size )
-      attach_function :tNames, :H5Gget_objname_by_idx, [H5Types.hid_t, :int, :pointer, :int], :int
-
-      #herr_t H5Gget_info_by_idx( hid_t loc_id, const char *group_name, H5_index_t index_type, H5_iter_order_t order, hsize_t n, H5G_info_t *group_info, hid_t lapl_id )
-      attach_function :tNames2, :H5Gget_info_by_idx, [H5Types.hid_t, :pointer, H5_index_t , :int, H5Types.hsize_t, H5GInfoT, H5Types.hid_t], H5Types.herr_t
-      #FIXME: #1: the H5_index_t needs to be defined
+      #ssize_t H5Lget_name_by_idx( hid_t loc_id, const char *group_name, H5_index_t index_field, H5_iter_order_t order, hsize_t n, char *name, size_t size, hid_t lapl_id )
+      attach_function :tNames2, :H5Lget_name_by_idx, [H5Types.hid_t, :string, :int, :int, :int, :pointer, :int, :int ], :int
 
       def initialize(file)
         @id = file.id
@@ -257,14 +263,15 @@ module OMX
 
       # A function to get the table names. Returns a string array of table names.
       def getTableNames()
-
         nT = self.getNTables()-1
+        gName = FFI::MemoryPointer.new(:string)
 
+        # Note from okiAndrew: this seems seriously kludgy, but it works.
         tN ||= []
         for t in 0..nT
-          tName = FFI::MemoryPointer.new(:string)
-          tno = tNames(@gId,t,tName,100)
-          tN << tName.read_string()
+          tn2o = tNames2(@gId, ".", 0, t, 0, gName, 20, 0)
+          #puts "gName = #{gName.read_string()}"
+          tN << gName.read_string()
         end
         return(tN)
       end
