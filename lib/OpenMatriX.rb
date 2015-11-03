@@ -113,6 +113,8 @@ module OMX
     ffi_lib H5Library.library_path
     attach_function :group_open, :H5Fopen, [H5Types.hid_t, :string, H5Types.hid_t], H5Types.hid_t
     attach_function :get_type, :H5Iget_type, [H5Types.hid_t], H5Types.hid_t
+    attach_variable :h5P_CLS_GROUP_ACCESS_ID, :H5P_CLS_GROUP_ACCESS_ID_g, :int
+    attach_variable :h5P_CLS_LINK_ACCESS_ID_g, :H5P_CLS_LINK_ACCESS_ID_g, :int
     #
     # Object for wrapping an OMX file. Basic usage:
     #     file = OMX::OMXFile.new('filename.omx')
@@ -266,10 +268,12 @@ module OMX
         nT = self.getNTables()-1
         gName = FFI::MemoryPointer.new(:string)
 
+        pl = createpl(OMX::h5P_CLS_LINK_ACCESS_ID_g)
+
         # Note from okiAndrew: this seems seriously kludgy, but it works.
         tN ||= []
         for t in 0..nT
-          tn2o = tNames2(@gId, ".", 0, t, 0, gName, 20, 0)
+          tn2o = tNames2(@gId, ".", 0, t, 0, gName, 20, pl)
           #puts "gName = #{gName.read_string()}"
           tN << gName.read_string()
         end

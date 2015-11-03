@@ -2,6 +2,14 @@
 
 OpenMatriX is a Ruby Gem to read [Open Matrix files](https://sites.google.com/site/openmodeldata/). This was built for use on the web and to eventually have APIs that can return values from a matrix.
 
+## Requirements
+
+Windows: This has only been tested on Windows 7-64 bit.
+
+Linux: a 64-bit version is REQUIRED.  This has been tested on a 32-bit Debian VM
+and it would not work due to addressing issues, however it DOES work on a 64-bit
+Debian VM.
+
 ## Installation
 
 Add this line to your application's Gemfile:

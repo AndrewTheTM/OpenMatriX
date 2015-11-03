@@ -6,7 +6,8 @@ on a Debian Jessie virtual machine that was upgraded from Debian Wheezy.
 # Prep
 
 First off, remove the included hdf5 distro.  You need 1.8.15, Jessie stable comes
-with 1.8.13.
+with 1.8.13.  And make sure you have 64 bit Debian.  THIS WILL NOT WORK WITH A
+32 BIT OPERATING SYSTEM.
 
 ```
 sudo apt-get remove libhdf5-dev
