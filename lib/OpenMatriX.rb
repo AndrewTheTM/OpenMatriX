@@ -250,6 +250,9 @@ module OMX
       #ssize_t H5Lget_name_by_idx( hid_t loc_id, const char *group_name, H5_index_t index_field, H5_iter_order_t order, hsize_t n, char *name, size_t size, hid_t lapl_id )
       attach_function :tNames2, :H5Lget_name_by_idx, [H5Types.hid_t, :string, :int, :int, :int, :pointer, :int, :int ], :int
 
+      # hid_t H5Pcreate( hid_t cls_id )
+      attach_function :createpl, :H5Pcreate, [H5Types.hid_t], H5Types.hid_t64
+
       def initialize(file)
         @id = file.id
         @gId = gOpen(@id, "data",0)
@@ -267,18 +270,23 @@ module OMX
       def getTableNames()
         nT = self.getNTables()-1
         gName = FFI::MemoryPointer.new(:string)
-
-        pl = createpl(OMX::h5P_CLS_LINK_ACCESS_ID_g)
-
-        # Note from okiAndrew: this seems seriously kludgy, but it works.
+        #idxOrder = OMX::h5_INDEX_CRT_ORDER
+        #ii = OMX::h5_ITER_INC
+        puts "before pl"
+        puts "link access constant = #{OMX::h5P_CLS_LINK_ACCESS_ID}"
+        pl = createpl(OMX::h5P_CLS_LINK_ACCESS_ID)
+        puts "pl = #{pl}, pl.class = #{pl.class}"
         tN ||= []
         for t in 0..nT
-          tn2o = tNames2(@gId, ".", 0, t, 0, gName, 20, pl)
+          size = 1 + tNames2(@gId, ".", 0, 0, t, nil, 0, createpl(OMX::h5P_CLS_LINK_ACCESS_ID))
+          puts "size = #{size}"
+          tn2o = tNames2(@gId, ".", 0, 0, t, gName, size, pl)
           #puts "gName = #{gName.read_string()}"
           tN << gName.read_string()
         end
         return(tN)
       end
+
 
     end #class OMXTables
 
