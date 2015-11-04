@@ -1,11 +1,20 @@
 # Debian Installation and Use Howto
 
 This how-to MAY be applicable to other linux distros.  This was written while making stuff work
-on a Debian Jessie virtual machine that was upgraded from Debian Wheezy.
+on a Debian Jessie virtual machine that was upgraded from Debian Wheezy.  After realizing that
+the virtual machine had a 32-bit OS and there is an addressing error somewhere, an attempt was
+made to upgrade from 32-bit to 64-bit.  This did not go well and left the virtual machine in
+an entirely messed up state.  A new virtual machine was built with a fresh install of Debian
+Jessie (64-bit this time!) and all of these were reviewed and some revisions were made.
 
 # Prep
 
-First off, remove the included hdf5 distro.  You need 1.8.15, Jessie stable comes
+First off, make sure gcc, g++, and build-essentials are installed.
+```
+sudo apt-get install -y gcc g++ build-essentials
+```
+
+Second off, remove the included hdf5 distro if it exists.  You need 1.8.15, Jessie stable comes
 with 1.8.13.  And make sure you have 64 bit Debian.  THIS WILL NOT WORK WITH A
 32 BIT OPERATING SYSTEM.
 
@@ -13,7 +22,11 @@ with 1.8.13.  And make sure you have 64 bit Debian.  THIS WILL NOT WORK WITH A
 sudo apt-get remove libhdf5-dev
 ```
 
-Download the source for hdf5 ans szip from hdf5's webpage and un-tar it, compile, test, and install it:
+# HDF Library Installation
+
+Download the source for hdf5 and szip from hdf5's webpage and un-tar it, compile, test (optional, but highly recommended),
+and install it:
+
 ```
 wget http://www.hdfgroup.org/ftp/lib-external/szip/2.1/src/szip-2.1.tar.gz
 gunzip szip-2.1.tar.gz
@@ -22,6 +35,7 @@ rm szip-2.1.tar
 cd szip-2.1
 ./configure --prefix=/usr/local/hdf5
 make
+make check
 sudo make install
 
 wget http://www.hdfgroup.org/ftp/HDF5/current/src/hdf5-1.8.15-patch1.tar
@@ -46,11 +60,4 @@ Then, reload the linker:
 ```
 sudo ldconfig
 ```
-
-# Landing
-
-Install Ruby and Rails:
-```
-sudo apt-get install ruby
-sudo apt-get install rubygems
-gem install rails
+At this point, the gem should work

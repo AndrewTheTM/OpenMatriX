@@ -57,6 +57,11 @@ puts tt.getIJ(i,j) # Returns value at i,j
 file.close()
 ```
 
+## Linux Notes
+
+This has only been tested on Debian Jessie, and it MUST be a 64-bit version.  See
+the [howto](Debian-HOWTO.md).
+
 ## Important Concepts for Non-Travel-Modelers
 
 Note that our use of matrices may be a little different from others', and we
