@@ -270,16 +270,10 @@ module OMX
       def getTableNames()
         nT = self.getNTables()-1
         gName = FFI::MemoryPointer.new(:string)
-        #idxOrder = OMX::h5_INDEX_CRT_ORDER
-        #ii = OMX::h5_ITER_INC
-        puts "before pl"
-        puts "link access constant = #{OMX::h5P_CLS_LINK_ACCESS_ID}"
         pl = createpl(OMX::h5P_CLS_LINK_ACCESS_ID)
-        puts "pl = #{pl}, pl.class = #{pl.class}"
         tN ||= []
         for t in 0..nT
-          size = 1 + tNames2(@gId, ".", 0, 0, t, nil, 0, createpl(OMX::h5P_CLS_LINK_ACCESS_ID))
-          puts "size = #{size}"
+          size = 1 + tNames2(@gId, ".", 0, 0, t, nil, 0, pl)
           tn2o = tNames2(@gId, ".", 0, 0, t, gName, size, pl)
           #puts "gName = #{gName.read_string()}"
           tN << gName.read_string()
