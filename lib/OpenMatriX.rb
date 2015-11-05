@@ -319,7 +319,7 @@ module OMX
 
       def initialize(file, table, zones)
         @id = file.id
-        @gId = OMXTables::gOpen(@id,"data")
+        @gId = OMXTables::gOpen(@id,"data",0)
         @zones = zones
         b = basic_open(@gId,table)
         filespace = h5dspace(b)
