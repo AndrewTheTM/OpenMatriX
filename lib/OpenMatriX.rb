@@ -114,7 +114,7 @@ module OMX
     attach_function :group_open, :H5Fopen, [H5Types.hid_t, :string, H5Types.hid_t], H5Types.hid_t
     attach_function :get_type, :H5Iget_type, [H5Types.hid_t], H5Types.hid_t
     attach_variable :h5P_CLS_GROUP_ACCESS_ID, :H5P_CLS_GROUP_ACCESS_ID_g, :int
-    attach_variable :h5P_CLS_LINK_ACCESS_ID_g, :H5P_CLS_LINK_ACCESS_ID_g, :int
+    attach_variable :h5P_CLS_LINK_ACCESS_ID, :H5P_CLS_LINK_ACCESS_ID_g, :int
     #
     # Object for wrapping an OMX file. Basic usage:
     #     file = OMX::OMXFile.new('filename.omx')
@@ -251,7 +251,7 @@ module OMX
       attach_function :tNames2, :H5Lget_name_by_idx, [H5Types.hid_t, :string, :int, :int, :int, :pointer, :int, :int ], :int
 
       # hid_t H5Pcreate( hid_t cls_id )
-      attach_function :createpl, :H5Pcreate, [H5Types.hid_t], H5Types.hid_t64
+      attach_function :createpl, :H5Pcreate, [H5Types.hid_t], H5Types.hid_t
 
       def initialize(file)
         @id = file.id
@@ -275,7 +275,6 @@ module OMX
         for t in 0..nT
           size = 1 + tNames2(@gId, ".", 0, 0, t, nil, 0, pl)
           tn2o = tNames2(@gId, ".", 0, 0, t, gName, size, pl)
-          #puts "gName = #{gName.read_string()}"
           tN << gName.read_string()
         end
         return(tN)
