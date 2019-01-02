@@ -87,6 +87,6 @@ This is still under some development.  Bug reports and pull requests are welcome
 
 ## Contact
 
-Old School Email: arohne (at) oki (dot) org
+Old School Email: andrew (at) siliconcreek (dot) net
 
-Twitter: @okiAndrew
+Twitter: @AndrewTheTM
