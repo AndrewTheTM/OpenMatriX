@@ -83,7 +83,7 @@ and column 20 (1-based, column 19 of 0-based).
 
 ## Contributing
 
-This is still under some development.  Bug reports and pull requests are welcome on GitHub at https://github.com/okiandrew/OpenMatriX.  
+This is still under some development.  Bug reports and pull requests are welcome. 
 
 ## Contact
 
